@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+    <meta charset="UTF-8">
+    <title>Product List</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/styles.css}">
+</head>
+<body>
+<th:block th:include="/_header"></th:block>
+<th:block th:include="/_menu"></th:block>
+
+<div class="page-title">Product List </div>
+<div class="cate-container">
+    <table>
+        <tr>
+            <td th:each="cateInfo : ${catagories}">
+                <a th:href="@{|/productList?catagory=${cateInfo.catId}|}">
+                    <span th:utext="  ${cateInfo.name}  "></span></a>
+            </td>
+        </tr></table><table>
+        <tr>
+            <td th:each="brandInfo : ${brands}">
+                <a th:href="@{|/productList?catagory=${catagoryURL}&brand=${brandInfo.brandId}|}">
+                    <span th:utext="  ${brandInfo.name}  "></span></a>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<th:block th:include="/resultProducts"></th:block>
+<div class="page-navigator" th:if="${paginationProducts.totalPages > 1}">
+    <th:block th:each="page : ${paginationProducts.navigationPages}">
+
+        <a th:href="@{|/productList?page=${page}|}" th:if="${page != -1}"
+           class="nav-item" th:utext="${page}"></a>
+
+        <span class="nav-item" th:if="${page == -1}"> ... </span>
+
+    </th:block>
+</div>
+
+<th:block th:include="/_footer"></th:block>
+
+</body>
+</html>

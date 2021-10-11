@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<head>
+    <meta charset="UTF-8">
+    <title>Product List</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/styles.css}">
+</head>
+<body>
+<th:block th:include="/_header"></th:block>
+<th:block th:include="/_menu"></th:block>
+<form name="searchFormProducts" method="POST" th:object="${searchForm}" th:action="@{/searchProductList}">
+<div class="page-title">Product List </div>
+<div>
+
+
+        <div class="search-form-container">
+           <table>
+               <tr><td>Product Name</td>
+                   <td colspan="4"><input type="text" name="name" th:value="${searchForm.name}"/>
+                       <input type="hidden" th:value="${searchForm.pageNumber}" name="pageNumber" id="searchProductsPage"/></td>
+               </tr>
+               <tr>
+                   <td>Catagory</td>
+                   <th:block th:each="cataItem : ${catagories}">
+                   <td>
+                       <input type="checkbox" name="catIdList" th:value="${cataItem.catId}" th:field="*{catIdList}"/>
+                       <label th:text="  ${cataItem.name}  "></label>
+                   </td>
+                   </th:block>
+               </tr>
+               <tr>
+                   <td>Brand</td>
+                   <th:block th:each="brandItem : ${brands}">
+                       <td>
+                           <input type="checkbox" name="brandIdList" th:value="${brandItem.brandId}" th:field="*{brandIdList}"/>
+                           <label th:text="  ${brandItem.name}  "></label>
+                       </td>
+                   </th:block>
+               </tr>
+               <tr>
+                   <td>Colour</td>
+                   <th:block th:each="coloItem : ${colours}">
+                       <td>
+                           <input type="checkbox" name="colourIdList" th:value="${coloItem.colourId}" th:field="*{colourIdList}"/>
+                           <label th:text="  ${coloItem.name}  "></label>
+                       </td>
+                   </th:block>
+               </tr>
+               <tr><td>Price</td>
+                   <td colspan="4">
+                       <span>  Min Price:  </span><input type="number" name="minPrice" th:value="${searchForm.minPrice}"/>
+                       <span>  Max Price:  </span><input type="number" name="maxPrice" th:value="${searchForm.maxPrice}"/>
+                   </td>
+               </tr>
+           </table>
+        </div>
+
+        <div style="clear: both"></div>
+        <input class="button-update-sc" type="submit" value="Search" />
+        <input type="reset"  value="Reset" onclick="resetForm()" />
+
+</div>
+<div th:if="${listNoData == null || !listNoData.isEmpty() || (paginationProducts != null && !paginationProducts.list.isEmpty())}">
+    <th:block th:include="/resultProducts"></th:block>
+
+    <div class="page-navigator" th:if="${paginationProducts.totalPages > 1}">
+        <th:block th:each="page : ${paginationProducts.navigationPages}">
+            <button class="btn-link" th:if="${page != -1}" th:utext="${page}" th:attr="onclick=|updatePage('${page}')|" >
+            </button>
+            <span class="nav-item" th:if="${page == -1}"> ... </span>
+
+        </th:block>
+    </div>
+</div>
+</form>
+<th:block th:include="/_footer"></th:block>
+
+</body>
+</html>
+<script>
+    function resetForm() {
+        window.location.href = "/searchProductList";
+    }
+    function updatePage(page) {
+        window.document.getElementById('searchProductsPage').setAttribute('value', page);
+    }
+</script>
